@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chess</title>
+
+    </head>
+    <body>
+        <script src="createBoard.js"></script>
+        <script src="pieces.js"></script>
+        <script src="isLegal.js"></script>
+        <script type="text/javascript">
+            var piece_selected = false;
+            var move_white = true;
+            var init_square;
+            var button1, button2, button3, button4;
+            var has_clicked_button = true;
+            var move_number = 1;
+            var last_move_start = "";
+            var last_move_end = "";
+            var last_move = "";
+            var Ra1_moved = false, Rh1_moved = false, Ra8_moved = false, Rh8_moved = false;
+            var Ke1_moved = false, Ke8_moved = false;
+            var white_castle, black_castle = false;
+            var promote;
+            var capture = false;
+            var ep = false;
+            var promotion_out;
+
+            
+
+            function changeCursor(){
+                for(i=1; i<9; i++){
+                    for(j=1; j<9; j++){
+                        var tempID = String(9-i) + String(j);
+                        document.getElementById(tempID).style.cursor = "default";
+                        //document.getElementById(tempID).onclick = move(tempID);
+                    };
+                };
+            };
+
+            function move(event) {
+                divId = event.srcElement.id;
+                var x = document.getElementById(divId).innerHTML;
+                capture = false;
+                var correct_turn = false;
+                promote = false;
+
+                if(!piece_selected && has_clicked_button){
+                    if(x.substring(0,1) === "w" && move_white || x.substring(0,1) === "b" && !move_white){
+                        correct_turn = true;
+                    } else if(x !== "" || !has_clicked_button){
+                        alert("It is not your turn!");
+                    }
+                }
+
+                if(!piece_selected && correct_turn && x !== ""){
+                    //the square is clicked for the first time
+                    document.getElementById(divId).style.fontWeight = "bold";
+                    document.getElementById(divId).style.backgroundColor = "red";
+                    piece_selected = true;
+                    init_square = divId;
+                } else if(divId === init_square){
+                    //the square is clicked for the second time (no move is made)
+                    document.getElementById(divId).style.fontWeight = "normal";
+                    colorSquare(init_square);
+                    piece_selected = false;
+                    init_square = "";
+                } else if(piece_selected && isLegal(divId, init_square)){
+                    //a legal move has been made
+                    if(ep){
+                        document.getElementById(last_move_end).innerHTML = "";
+                        console.log("en passant");
+                    }
+                    document.getElementById(divId).innerHTML = document.getElementById(init_square).innerHTML;
+                    document.getElementById(init_square).innerHTML = "";
+                    document.getElementById(init_square).style.fontWeight = "normal";
+                    colorSquare(init_square);
+                    
+
+                    //determines if the kings or the rooks have moved
+                    if(divId === "11" || init_square === "11"){
+                        Ra1_moved = true;
+                    } else if(divId === "18" || init_square === "18"){
+                        Rh1_moved = true;
+                    } else if(divId === "81" || init_square === "81"){
+                        Ra8_moved = true;
+                    } else if(divId === "88" || init_square === "88"){
+                        Rh8_moved = true;
+                    } else if(init_square === "15" || divId === "15"){
+                        Ke1_moved = true;
+                    } else if(init_square === "85" || divId === "85"){
+                        Ke8_moved = true;
+                    }
+                    
+                    addImages();
+                    
+                    move_white = !move_white;
+                    piece_selected = false;
+                }
+            };
+
+            
+            function convertCoordinates(squareId){
+                var temp;
+                var letterCrd = parseInt(squareId.substring(1,2));
+                var numberCrd = squareId.substring(0,1);
+                switch(letterCrd){
+                    case 1: return temp = "a"+numberCrd;
+                    case 2: return temp = "b"+numberCrd;
+                    case 3: return temp = "c"+numberCrd;
+                    case 4: return temp = "d"+numberCrd;
+                    case 5: return temp = "e"+numberCrd;
+                    case 6: return temp = "f"+numberCrd;
+                    case 7: return temp = "g"+numberCrd;
+                    case 8: return temp = "h"+numberCrd;
+                    default: return temp = "error";
+                }
+            }
+            
+            //failed image stuff
+            function addImages(){
+                for(i=1; i<89; i++){
+                    var tempId = String(i);
+                    if(document.getElementById(tempId) !== null){
+                        setImage(tempId);
+                    }
+                }
+            }
+
+            function setImage(id){
+                var image1 = document.createElement("IMG");
+                var z = document.getElementById(id).innerHTML;
+                var hasPiece = true;
+                image1.setAttribute("height", "40px");
+                image1.setAttribute("height", "40px");
+                image1.setAttribute("id", id);
+                image1.addEventListener("click", move);
+                if(z === "bp"){
+                    image1.setAttribute("src", "bp.gif");
+                } else if(z === "bN"){
+                    image1.setAttribute("src", "bN.gif");
+                } else if(z === "bB"){
+                    image1.setAttribute("src", "bB.gif");
+                } else if(z === "bR"){
+                    image1.setAttribute("src", "bR.gif");
+                } else if(z === "bQ"){
+                    image1.setAttribute("src", "bQ.gif");
+                } else if(z === "bK"){
+                    image1.setAttribute("src", "bK.gif");
+                } else if(z === "wp"){
+                    image1.setAttribute("src", "wp.gif");
+                } else if(z === "wN"){
+                    image1.setAttribute("src", "wN.gif");
+                } else if(z === "wB"){
+                    image1.setAttribute("src", "wB.gif");
+                } else if(z === "wR"){
+                    image1.setAttribute("src", "wR.gif");
+                } else if(z === "wQ"){
+                    image1.setAttribute("src", "wQ.gif");
+                } else if(z === "wK"){
+                    image1.setAttribute("src", "wK.gif");
+                } else {
+                    hasPiece = false;
+                }
+                if(hasPiece){
+                    document.getElementById(id).appendChild(image1);
+                }
+                return image1;
+            }
+            
+            
+
+            //TODO:
+            //system to determine if the king is in check
+            //material count
+            //show captured pieces
+            //updateObjectCrd() does not work for castling
+            //
+            //the event listener should be added to the images
+            //figure out a way to get rid of the text
+            //BUGS
+            //the promoted pawn disappears before the piece appears
+            //updating with capture not working
+            //updating the object coordinates might have to be handled with the 'isLegal...()' functions
+            //images are not updated to the correct background color
+            //on pawn moves, the original pawn stays on the board with the picture and remains bold
+            //^seems to be a visual glitch only
+            //promotion
+            //en passant not working
+
+            window.onload = createBoard();
+            window.onload = createPieces();
+            window.onload = changeIDs(ps.length);
+            window.onload = changeCursor();
+            window.onload = addImages();
+            window.onload = function(){
+                for (h = 1; h < 9; h++) {
+                    for (i = 1; i < 9; i++) {
+                        var divID = String(9-h) + String(i);
+                        document.getElementById(divID).addEventListener("click", move);
+                    };
+                };
+            };
+            document.body.style.backgroundColor = "teal";
+        </script>
+    </body>
+</html>
