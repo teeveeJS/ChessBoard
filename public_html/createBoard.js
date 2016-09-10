@@ -11,7 +11,7 @@ function createBoard() {
             }//this could probably also be replaced with colorSquare, just be careful with async
             temp.innerHTML = "";
             temp.setAttribute("id", divID);
-            temp.style.fontSize = "6px";
+            temp.style.fontSize = "0px";
             temp.style.width = "40px";
             temp.style.height = "40px";
             temp.style.position = "absolute";
@@ -28,5 +28,3 @@ function colorSquare(id){
         document.getElementById(id).style.backgroundColor = "gray";
     }
 }
-
-

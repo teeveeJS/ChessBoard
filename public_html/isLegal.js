@@ -2,6 +2,7 @@ function isLegal(id, init) {
     var end = document.getElementById(id).innerHTML;
     var start = document.getElementById(init).innerHTML;
     if(end.substring(0,1) === start.substring(0,1)){
+        //checks if player tried to capture own piece
         return false;
     }
     switch(start.substring(1,2)){
@@ -138,11 +139,9 @@ function isLegalKing(id, init){
         //does not take checks into account
     }
     //castling logic
-    if(Math.abs(endAlph - startAlph) === 2){
-        legal = checkCastle();
+    if(Math.abs(endAlph - startAlph) === 2 && checkCastle(id)){
+        legal = true;
     }
-    //IMPORTANT!! UPDATING PIECE LOCATION SHOULD NOT BE HANDLED HERE!!
-    
     if(legal && document.getElementById(id).innerHTML.substring(0,1) === "b" && move_white || document.getElementById(id).innerHTML.substring(0,1) === "w" && !move_white){
         capture = true;
     }
@@ -278,41 +277,35 @@ function promotion(in_square, out_square){
     }
 }
 
-function checkCastle(id, init){
-    var startAlph = parseInt(init.substring(1,2));
-    var startNum = parseInt(init.substring(0,1));
-    var endAlph = parseInt(id.substring(1,2));
-    var endNum = parseInt(id.substring(0,1));
+function checkCastle(end_square){
+    var endAlph = parseInt(end_square.substring(1,2));
+    var endNum = parseInt(end_square.substring(0,1));
     
     if(!Ke8_moved && !Rh8_moved && endAlph === 7 && endNum === 8 && isLegalRook("86", "88")){
-        document.getElementById("88").innerHTML = "";//BAD
-        document.getElementById("86").innerHTML = "bR";//BAD
         Ke8_moved = true;
         Rh8_moved = true;
         black_castle = true;
+        castle = "b00";
         return true;
     } else if(!Ke8_moved && !Ra8_moved && endAlph === 3 && endNum === 8 && isLegalRook("84", "81")){
-        document.getElementById("81").innerHTML = "";
-        document.getElementById("84").innerHTML = "bR";
         Ke8_moved = true;
         Ra8_moved = true;
         black_castle = true;
+        castle = "b000";
         return true;
     } else if(!Ke1_moved && !Rh1_moved && endAlph === 7 && endNum === 1 && isLegalRook("16", "18")){
-        document.getElementById("18").innerHTML = "";
-        document.getElementById("16").innerHTML = "wR";
         Ke1_moved = true;
         Rh1_moved = true;
         white_castle = true;
+        castle = "w00";
         return true;
     } else if(!Ke1_moved && !Ra1_moved && endAlph === 3 && endNum === 1 && isLegalRook("14", "11")){
-        document.getElementById("11").innerHTML = "";
-        document.getElementById("14").innerHTML = "wR";
         Ke1_moved = true;
         Ra1_moved = true;
         white_castle = true;
+        castle = "w000";
         return true;
+    } else {
+        return false;
     }
-    return false;
 }
-

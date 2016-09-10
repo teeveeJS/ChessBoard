@@ -31,6 +31,7 @@
             var capture = false;
             var ep = false;
             var promotion_out;
+            var castle;
 
             
 
@@ -48,9 +49,10 @@
                 event.stopPropagation();
                 divId = event.srcElement.id.substring(0,2);
                 var x = document.getElementById(divId).innerHTML;
-                capture = false;
                 var correct_turn = false;
+                capture = false;
                 promote = false;
+                castle = "";
 
                 if(!piece_selected && has_clicked_button){
                     if(x.substring(0,1) === "w" && move_white || x.substring(0,1) === "b" && !move_white){
@@ -77,12 +79,24 @@
                     if(ep){
                         document.getElementById(last_move_end).innerHTML = "";
                         console.log("en passant");
+                    } else if(castle === "b00"){
+                        document.getElementById("88").innerHTML = "";
+                        document.getElementById("86").innerHTML = "bR";
+                    } else if(castle === "b000"){
+                        document.getElementById("81").innerHTML = "";
+                        document.getElementById("84").innerHTML = "bR";
+                    } else if(castle === "w00"){
+                        document.getElementById("18").innerHTML = "";
+                        document.getElementById("16").innerHTML = "wR";
+                    } else if(castle === "w000"){
+                        document.getElementById("11").innerHTML = "";
+                        document.getElementById("14").innerHTML = "wR";
                     }
                     document.getElementById(divId).innerHTML = document.getElementById(init_square).innerHTML.substring(0,2);
                     document.getElementById(init_square).innerHTML = "";
                     document.getElementById(init_square).style.fontWeight = "normal";
                     colorSquare(init_square);
-                    
+
 
                     //determines if the kings or the rooks have moved
                     if(divId === "11" || init_square === "11"){
@@ -191,12 +205,13 @@
             system to determine if the king is in check
             material count
             show captured pieces
-            moving pieces for castling should be handled in move(), not isLegalKing()!!
+            handle castling in move(), not isLegalKing()!!:FIXED
             
             
             BUGS
-            
+            promotion not working
             en passant not working
+            castling not working: FIXED
             */
 
             window.onload = createBoard();
