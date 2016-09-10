@@ -28,7 +28,7 @@ function isLegalRook(id, init){
     console.log("checking from " + startInt + " to " + endInt);
     if(init.substring(0,1) === id.substring(0,1)){
         //rank
-        //checks if ther are any pieces on the way to the final square
+        //checks if there are any pieces on the way to the final square
         var distance = endInt - startInt;
         //positive direction
         if(distance>0){
@@ -138,35 +138,11 @@ function isLegalKing(id, init){
         //does not take checks into account
     }
     //castling logic
-    if(!Ke8_moved && !Rh8_moved && endAlph === 7 && endNum === 8 && isLegalRook("86", "88")){
-        document.getElementById("88").innerHTML = "";
-        document.getElementById("86").innerHTML = "bR";
-        Ke8_moved = true;
-        Rh8_moved = true;
-        black_castle = true;
-        legal = true;
-    } else if(!Ke8_moved && !Ra8_moved && endAlph === 3 && endNum === 8 && isLegalRook("84", "81")){
-        document.getElementById("81").innerHTML = "";
-        document.getElementById("84").innerHTML = "bR";
-        Ke8_moved = true;
-        Ra8_moved = true;
-        black_castle = true;
-        legal = true;
-    } else if(!Ke1_moved && !Rh1_moved && endAlph === 7 && endNum === 1 && isLegalRook("16", "18")){
-        document.getElementById("18").innerHTML = "";
-        document.getElementById("16").innerHTML = "wR";
-        Ke1_moved = true;
-        Rh1_moved = true;
-        white_castle = true;
-        legal = true;
-    } else if(!Ke1_moved && !Ra1_moved && endAlph === 3 && endNum === 1 && isLegalRook("14", "11")){
-        document.getElementById("11").innerHTML = "";
-        document.getElementById("14").innerHTML = "wR";
-        Ke1_moved = true;
-        Ra1_moved = true;
-        white_castle = true;
-        legal = true;
+    if(Math.abs(endAlph - startAlph) === 2){
+        legal = checkCastle();
     }
+    //IMPORTANT!! UPDATING PIECE LOCATION SHOULD NOT BE HANDLED HERE!!
+    
     if(legal && document.getElementById(id).innerHTML.substring(0,1) === "b" && move_white || document.getElementById(id).innerHTML.substring(0,1) === "w" && !move_white){
         capture = true;
     }
@@ -290,7 +266,7 @@ function promotion(in_square, out_square){
             move_white = false;
         } else {
             document.getElementById(btn.id.substring(0,2)).innerHTML = "b" + btn.innerHTML.substring(0,1);
-            ps[ps.length] = new CP(btn.innerHTML.substring(0,1), "b", file, rank);
+            //ps[ps.length] = new CP(btn.innerHTML.substring(0,1), "b", file, rank);
             move_white = true;
         }
         document.body.removeChild(button1);
@@ -302,5 +278,41 @@ function promotion(in_square, out_square){
     }
 }
 
-
+function checkCastle(id, init){
+    var startAlph = parseInt(init.substring(1,2));
+    var startNum = parseInt(init.substring(0,1));
+    var endAlph = parseInt(id.substring(1,2));
+    var endNum = parseInt(id.substring(0,1));
+    
+    if(!Ke8_moved && !Rh8_moved && endAlph === 7 && endNum === 8 && isLegalRook("86", "88")){
+        document.getElementById("88").innerHTML = "";//BAD
+        document.getElementById("86").innerHTML = "bR";//BAD
+        Ke8_moved = true;
+        Rh8_moved = true;
+        black_castle = true;
+        return true;
+    } else if(!Ke8_moved && !Ra8_moved && endAlph === 3 && endNum === 8 && isLegalRook("84", "81")){
+        document.getElementById("81").innerHTML = "";
+        document.getElementById("84").innerHTML = "bR";
+        Ke8_moved = true;
+        Ra8_moved = true;
+        black_castle = true;
+        return true;
+    } else if(!Ke1_moved && !Rh1_moved && endAlph === 7 && endNum === 1 && isLegalRook("16", "18")){
+        document.getElementById("18").innerHTML = "";
+        document.getElementById("16").innerHTML = "wR";
+        Ke1_moved = true;
+        Rh1_moved = true;
+        white_castle = true;
+        return true;
+    } else if(!Ke1_moved && !Ra1_moved && endAlph === 3 && endNum === 1 && isLegalRook("14", "11")){
+        document.getElementById("11").innerHTML = "";
+        document.getElementById("14").innerHTML = "wR";
+        Ke1_moved = true;
+        Ra1_moved = true;
+        white_castle = true;
+        return true;
+    }
+    return false;
+}
 
