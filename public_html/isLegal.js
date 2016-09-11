@@ -74,9 +74,7 @@ function isLegalRook(id, init){
     } else {
         legal = false;
     }
-    if(legal && document.getElementById(id).innerHTML.substring(0,1) === "b" && move_white || document.getElementById(id).innerHTML.substring(0,1) === "w" && !move_white){
-        capture = true;
-    }
+    capture = isCapture(legal, id);
     return legal;
 }
 
@@ -107,9 +105,7 @@ function isLegalBishop(id, init){
             legal = false;
         }
     }
-    if(legal && document.getElementById(id).innerHTML.substring(0,1) === "b" && move_white || document.getElementById(id).innerHTML.substring(0,1) === "w" && !move_white){
-        capture = true;
-    }
+    capture = isCapture(legal, id);
     return legal;
 }
 
@@ -122,9 +118,7 @@ function isLegalKnight(id, init){
     if(Math.abs(endAlph-startAlph) === 2 && Math.abs(endNum-startNum) === 1 || Math.abs(endAlph-startAlph) === 1 && Math.abs(endNum-startNum) === 2){
         legal = true;
     }
-    if(legal && document.getElementById(id).innerHTML.substring(0,1) === "b" && move_white || document.getElementById(id).innerHTML.substring(0,1) === "w" && !move_white){
-        capture = true;
-    }
+    capture = isCapture(legal, id);
     return legal;
 }
 
@@ -142,9 +136,7 @@ function isLegalKing(id, init){
     if(Math.abs(endAlph - startAlph) === 2 && checkCastle(id)){
         legal = true;
     }
-    if(legal && document.getElementById(id).innerHTML.substring(0,1) === "b" && move_white || document.getElementById(id).innerHTML.substring(0,1) === "w" && !move_white){
-        capture = true;
-    }
+    
     return legal;
 }
 
@@ -157,7 +149,7 @@ function isLegalPawn(id, init){
     capture = false;
     ep = false;
     var legal = false;
-
+    
     //white pawn
     if(document.getElementById(init).innerHTML.substring(0,1) === "w"){
         //if the pawn moves only 1 square
@@ -166,7 +158,7 @@ function isLegalPawn(id, init){
                 if(output.substring(0,1) === "b"){
                     capture = true;
                     legal = true;
-                } else if(output.substring(0,1) === ""){
+                } else if(output.substring(0,1) === "" && last_move.substring(2,3) === "5" && document.getElementById(last_move.substring(2,4)).innerHTML.substring(0,2) === "bp"){
                     //en passant white
                     capture = true;
                     ep = true;
@@ -178,12 +170,8 @@ function isLegalPawn(id, init){
                 }
             }
         //if the pawn moves 2 squares
-        } else if(endNum - startNum === 2 && startNum === 2){
-            if(endAlph - startAlph === 0){
-                if(document.getElementById(String(parseInt(id)-10)).innerHTML === "" && output === ""){
-                    legal = true;
-                }                            
-            }
+        } else if(endNum - startNum === 2 && startNum === 2 && endAlph - startAlph === 0 && document.getElementById(String(parseInt(id)-10)).innerHTML === "" && output === ""){
+            legal = true;
         }
         if(endNum === 8 && legal){
             promotion(init, id);
@@ -197,7 +185,7 @@ function isLegalPawn(id, init){
                 if(output.substring(0,1) === "w"){
                     capture = true;
                     legal = true;
-                } else if(last_move_end.substring(0,1) === "4" && Math.abs(parseInt(last_move_end.substring(1,2)) - startAlph) === 1 && document.getElementById(last_move_end).innerHTML === "wp"){
+                } else if(output.substring(0,1) === "" && last_move.substring(2,3) === "4" && document.getElementById(last_move.substring(2,4)).innerHTML.substring(0,2) === "wp"){
                     capture = true;
                     ep = true;
                     legal = true;
@@ -304,6 +292,14 @@ function checkCastle(end_square){
         Ra1_moved = true;
         white_castle = true;
         castle = "w000";
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function isCapture(legal, id){
+    if(legal && document.getElementById(id).innerHTML.substring(0,1) !== "<"){
         return true;
     } else {
         return false;

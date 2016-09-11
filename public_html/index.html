@@ -21,8 +21,6 @@
             var button1, button2, button3, button4;
             var has_clicked_button = true;
             var move_number = 1;
-            var last_move_start = "";
-            var last_move_end = "";
             var last_move = "";
             var Ra1_moved = false, Rh1_moved = false, Ra8_moved = false, Rh8_moved = false;
             var Ke1_moved = false, Ke8_moved = false;
@@ -50,6 +48,7 @@
                 divId = event.srcElement.id.substring(0,2);
                 var x = document.getElementById(divId).innerHTML;
                 var correct_turn = false;
+                ep = false;
                 capture = false;
                 promote = false;
                 castle = "";
@@ -77,7 +76,7 @@
                 } else if(piece_selected && isLegal(divId, init_square)){
                     //a legal move has been made
                     if(ep){
-                        document.getElementById(last_move_end).innerHTML = "";
+                        document.getElementById(last_move.substring(2,4)).innerHTML = "";
                         console.log("en passant");
                     } else if(castle === "b00"){
                         document.getElementById("88").innerHTML = "";
@@ -114,8 +113,9 @@
                     }
                     
                     //this could be optimized by creating a function that updates the images for the squares affected
-                    addImages();
+                    setImage(divId);
                     
+                    last_move = init_square + divId;
                     move_white = !move_white;
                     piece_selected = false;
                 }
