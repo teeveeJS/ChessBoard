@@ -35,7 +35,7 @@ function createPieces(){
     return ps;
 };
 
-function changeIDs(length){
+function initializePieces(length){
     for(i=0; i<length; i++){
         var pieceID = String(ps[i].Num)+String(ps[i].Alf);
         //console.log(pieceID);

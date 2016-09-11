@@ -128,7 +128,7 @@ function isLegalKing(id, init){
     var endAlph = parseInt(id.substring(1,2));
     var endNum = parseInt(id.substring(0,1));
     var legal = false;
-    if(Math.abs(endAlph-startAlph) === 1 || Math.abs(endNum-startNum) === 1){
+    if(Math.abs(endAlph-startAlph) <= 1 && Math.abs(endNum-startNum) <= 1){
         legal = true;
         //does not take checks into account
     }
@@ -217,24 +217,28 @@ function promotion(in_square, out_square){
     button1 = document.createElement("BUTTON");
     button1.setAttribute("id", out_square+"Q");
     button1.innerHTML = "Q"+convertCoordinates(out_square);
+    button1.style.marginLeft = "40px";
     button1.addEventListener("click", promote);
     document.body.appendChild(button1);
 
     button2 = document.createElement("BUTTON");
     button2.setAttribute("id", out_square+"R");
     button2.innerHTML = "R"+convertCoordinates(out_square);
+    button2.style.marginLeft = "80px";
     button2.addEventListener("click", promote);
     document.body.appendChild(button2);
 
     button3 = document.createElement("BUTTON");
     button3.setAttribute("id", out_square+"B");
     button3.innerHTML = "B"+convertCoordinates(out_square);
+    button3.style.marginLeft = "120px";
     button3.addEventListener("click", promote);
     document.body.appendChild(button3);
 
     button4 = document.createElement("BUTTON");
     button4.setAttribute("id", out_square+"N");
     button4.innerHTML = "N"+convertCoordinates(out_square);
+    button4.style.marginLeft = "160px";
     button4.addEventListener("click", promote);
     document.body.appendChild(button4);
 
@@ -244,18 +248,17 @@ function promotion(in_square, out_square){
         var btn = event.srcElement;
         var rank = parseInt(btn.id.substring(0,1));
         var file = parseInt(btn.id.substring(1,2));
-        promotion_out = document.getElementById(btn.id.substring(0,2)).innerHTML + btn.id.substring(0,2).innerHTML;
-        promote = true;
-        //console.log("rank " + rank + " file " + file);
+        console.log("rank " + rank + " file " + file);
         if(rank === 8){
             document.getElementById(btn.id.substring(0,2)).innerHTML = "w" + btn.innerHTML.substring(0,1);
-            //singleUpdateCrd(in_square, out_square);
+            promotion = "w" + btn.innerHTML.substring(0,1);
             move_white = false;
         } else {
             document.getElementById(btn.id.substring(0,2)).innerHTML = "b" + btn.innerHTML.substring(0,1);
-            //ps[ps.length] = new CP(btn.innerHTML.substring(0,1), "b", file, rank);
+            promotion = "b" + btn.innerHTML.substring(0,1);
             move_white = true;
         }
+        setImage(btn.id.substring(0,2));
         document.body.removeChild(button1);
         document.body.removeChild(button2);
         document.body.removeChild(button3);
@@ -266,6 +269,7 @@ function promotion(in_square, out_square){
 }
 
 function checkCastle(end_square){
+    console.log('checking castle');
     var endAlph = parseInt(end_square.substring(1,2));
     var endNum = parseInt(end_square.substring(0,1));
     

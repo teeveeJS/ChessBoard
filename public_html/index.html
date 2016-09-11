@@ -10,26 +10,36 @@
                 position: absolute;
             }
         </style>
+        
         <script src="createBoard.js"></script>
         <script src="pieces.js"></script>
         <script src="isLegal.js"></script>
         <script src="announceMove.js"></script>
+        <script src="addImages_setImage.js"></script>
+        
         <script type="text/javascript">
             var piece_selected = false;
             var move_white = true;
             var init_square;
+            var move_number = 0;
+            var last_move = "";
+            var actual_move = "";
+            
+            //for promotion
             var button1, button2, button3, button4;
             var has_clicked_button = true;
-            var move_number = 1;
-            var last_move = "";
+            var promotion;
+                        
+            //for castling
             var Ra1_moved = false, Rh1_moved = false, Ra8_moved = false, Rh8_moved = false;
             var Ke1_moved = false, Ke8_moved = false;
+            var castle;
             var white_castle, black_castle = false;
-            var promote;
+            
+            //special cases
             var capture = false;
             var ep = false;
-            var promotion_out;
-            var castle;
+            
 
             
 
@@ -50,14 +60,13 @@
                 var correct_turn = false;
                 ep = false;
                 capture = false;
-                promote = false;
                 castle = "";
 
                 if(!piece_selected && has_clicked_button){
                     if(x.substring(0,1) === "w" && move_white || x.substring(0,1) === "b" && !move_white){
                         correct_turn = true;
                     } else if(x !== "" || !has_clicked_button){
-                        alert("It is not your turn!");
+                        alert("Tätä peliä pelataan vuoretellen! - K.K.");
                     }
                 }
 
@@ -81,15 +90,19 @@
                     } else if(castle === "b00"){
                         document.getElementById("88").innerHTML = "";
                         document.getElementById("86").innerHTML = "bR";
+                        setImage("86");
                     } else if(castle === "b000"){
                         document.getElementById("81").innerHTML = "";
                         document.getElementById("84").innerHTML = "bR";
+                        setImage("84");
                     } else if(castle === "w00"){
                         document.getElementById("18").innerHTML = "";
                         document.getElementById("16").innerHTML = "wR";
+                        setImage("16");
                     } else if(castle === "w000"){
                         document.getElementById("11").innerHTML = "";
                         document.getElementById("14").innerHTML = "wR";
+                        setImage("14");
                     }
                     document.getElementById(divId).innerHTML = document.getElementById(init_square).innerHTML.substring(0,2);
                     document.getElementById(init_square).innerHTML = "";
@@ -112,10 +125,13 @@
                         Ke8_moved = true;
                     }
                     
-                    //this could be optimized by creating a function that updates the images for the squares affected
                     setImage(divId);
+                    actual_move = announceMove(init_square, divId, capture, promotion, castle);
                     
                     last_move = init_square + divId;
+                    if(move_white){
+                        move_number++;
+                    }
                     move_white = !move_white;
                     piece_selected = false;
                 }
@@ -138,67 +154,7 @@
                     default: return temp = "error";
                 }
             }
-            
-            //failed image stuff
-            function addImages(){
-                for (h = 1; h < 9; h++) {
-                    for (i = 1; i < 9; i++) {
-                        var divID = String(9-h) + String(i);
-                        var x = document.getElementById(divID).innerHTML;
-                        if(x !== "" || x !== undefined || x !== null){
-                            //console.log(x + " " + convertCoordinates(divID));
-                            setImage(divID);
-                        }
-                    }
-                }
-            };
 
-            function setImage(id){
-                var image1 = document.createElement("IMG");
-                var z = document.getElementById(id).innerHTML;
-                var imID = id+"Image";
-                var hasPiece = true;
-                image1.setAttribute("height", "40px");
-                image1.setAttribute("height", "40px");
-                image1.setAttribute("id", imID);
-                image1.addEventListener("click", move);
-                //image1.style.position = "relative";
-                //image1.style.zIndex = "-1";
-                if(z === "bp"){
-                    image1.setAttribute("src", "bp.gif");
-                } else if(z === "bN"){
-                    image1.setAttribute("src", "bN.gif");
-                } else if(z === "bB"){
-                    image1.setAttribute("src", "bB.gif");
-                } else if(z === "bR"){
-                    image1.setAttribute("src", "bR.gif");
-                } else if(z === "bQ"){
-                    image1.setAttribute("src", "bQ.gif");
-                } else if(z === "bK"){
-                    image1.setAttribute("src", "bK.gif");
-                } else if(z === "wp"){
-                    image1.setAttribute("src", "wp.gif");
-                } else if(z === "wN"){
-                    image1.setAttribute("src", "wN.gif");
-                } else if(z === "wB"){
-                    image1.setAttribute("src", "wB.gif");
-                } else if(z === "wR"){
-                    image1.setAttribute("src", "wR.gif");
-                } else if(z === "wQ"){
-                    image1.setAttribute("src", "wQ.gif");
-                } else if(z === "wK"){
-                    image1.setAttribute("src", "wK.gif");
-                } else {
-                    hasPiece = false;
-                    //this would not be necessary if addImages() handled the filtering
-                }
-                if(hasPiece){
-                    document.getElementById(id).appendChild(image1);
-                }
-                
-                return image1;
-            }
-            
             
             /*
             TODO:
@@ -206,18 +162,20 @@
             material count
             show captured pieces
             handle castling in move(), not isLegalKing()!!:FIXED
+            move number
             
             
             BUGS
-            promotion not working
-            en passant not working
+            promotion not working: FIXED
+            en passant not working: FIXED
             castling not working: FIXED
+            king moves like the knight: FIXED
+            rooks go invisible after castling: FIXED
             */
 
             window.onload = createBoard();
             window.onload = createPieces();
-            window.onload = changeIDs(ps.length);
-            //probably get rid of these
+            window.onload = initializePieces(ps.length);
             window.onload = changeCursor();
             window.onload = addImages();
             //adds the event listeners to all the div's (squares)

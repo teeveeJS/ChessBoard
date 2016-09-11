@@ -1,28 +1,36 @@
-function announceCrd(input, output, capture, prom){
+function announceMove(input, output, capture, prom, castle){
     //capture === boolean, promotion_out === wQ etc.
     
     var piece = document.getElementById(output).innerHTML.substring(1,2);
     var out = convertCoordinates(output);
     var in1 = convertCoordinates(input);
-    last_move = piece + out;
-    //console.log(piece + out);
+    var move = piece + out;
     if(piece === "p" && capture){
-        last_move = in1.substring(0,1) + "x" + out;
+        move = in1.substring(0,1) + "x" + out;
     } else if (piece === "p"){
         if(document.getElementById(output).innerHTML.substring(0,1) === "w" && out.substring(1,2) === "8"){
-            last_move = out + "=" + prom.substring(1,2);
+            move = out + "=" + prom.substring(1,2);
         } else if(document.getElementById(output).innerHTML.substring(0,1) === "b" && out.substring(1,2) === "1"){
-            last_move = "(b)" + out + "=" +prom.substring(1,2);
+            move = "(b)" + out + "=" +prom.substring(1,2);
         } else {
-            last_move = out;
+            move = out;
         };                    
     } else if(capture){
-        last_move = piece + "x" + out;
+        move = piece + "x" + out;
     };
+    switch(castle){
+        case "w00" || "b00":
+            move = "0-0";
+            break;
+        case "w000" || "b000":
+            move = "0-0-0";
+            break;
+        default: console.log("error");
+    }
 
     if(document.getElementById(output).innerHTML.substring(0,1) === "b"){
-        last_move = "(b) " + last_move;
+        move = "(b) " + move;
     }
-    console.log(last_move);
-    return last_move;
+    console.log(move);
+    return move;
 }
