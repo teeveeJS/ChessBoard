@@ -25,7 +25,6 @@ function isLegalRook(id, init){
     var startInt = parseInt(init);
     var endInt = parseInt(id);
     var legal = true;
-    capture = false;
     console.log("checking from " + startInt + " to " + endInt);
     if(init.substring(0,1) === id.substring(0,1)){
         //rank
@@ -136,7 +135,7 @@ function isLegalKing(id, init){
     if(Math.abs(endAlph - startAlph) === 2 && checkCastle(id)){
         legal = true;
     }
-    
+    capture = isCapture(legal, id);
     return legal;
 }
 
@@ -146,8 +145,6 @@ function isLegalPawn(id, init){
     var endAlph = parseInt(id.substring(1,2));
     var endNum = parseInt(id.substring(0,1));
     var output = document.getElementById(id).innerHTML;
-    capture = false;
-    ep = false;
     var legal = false;
     
     //white pawn
@@ -173,9 +170,7 @@ function isLegalPawn(id, init){
         } else if(endNum - startNum === 2 && startNum === 2 && endAlph - startAlph === 0 && document.getElementById(String(parseInt(id)-10)).innerHTML === "" && output === ""){
             legal = true;
         }
-        if(endNum === 8 && legal){
-            promotion(init, id);
-        }
+
     //black pawn
     } else if(document.getElementById(init).innerHTML.substring(0,1) === "b"){
         //moves only 1 square (down)
@@ -203,16 +198,15 @@ function isLegalPawn(id, init){
                     legal = true;
                 }
             }
-        }
-        if(endNum === 1 && legal){
-            promotion(init, id);
-        }
-    }
-
+        }        
+    }    
+    if(endNum === 1 || endNum === 8 && legal){
+        promotion(id);
+    }    
     return legal;
 }
 
-function promotion(in_square, out_square){
+function promotion(out_square){
     alert("promotion");
     button1 = document.createElement("BUTTON");
     button1.setAttribute("id", out_square+"Q");
@@ -242,29 +236,23 @@ function promotion(in_square, out_square){
     button4.addEventListener("click", promote);
     document.body.appendChild(button4);
 
-    has_clicked_button = false;
-
+    hasPromoted = false;
+    
     function promote(event){
-        var btn = event.srcElement;
-        var rank = parseInt(btn.id.substring(0,1));
-        var file = parseInt(btn.id.substring(1,2));
-        console.log("rank " + rank + " file " + file);
-        if(rank === 8){
+        var btn = event.target;
+        if(parseInt(btn.id.substring(0,1)) === 8){
             document.getElementById(btn.id.substring(0,2)).innerHTML = "w" + btn.innerHTML.substring(0,1);
-            promotion = "w" + btn.innerHTML.substring(0,1);
-            move_white = false;
+            pr = "w" + btn.innerHTML.substring(0,1);
         } else {
             document.getElementById(btn.id.substring(0,2)).innerHTML = "b" + btn.innerHTML.substring(0,1);
-            promotion = "b" + btn.innerHTML.substring(0,1);
-            move_white = true;
+            pr = "b" + btn.innerHTML.substring(0,1);
         }
-        setImage(btn.id.substring(0,2));
+        setImage(btn.id.substring(0,2));        
         document.body.removeChild(button1);
         document.body.removeChild(button2);
         document.body.removeChild(button3);
         document.body.removeChild(button4);
-        has_clicked_button = true;
-        return move_white;
+        hasPromoted = true;
     }
 }
 
@@ -303,7 +291,7 @@ function checkCastle(end_square){
 }
 
 function isCapture(legal, id){
-    if(legal && document.getElementById(id).innerHTML.substring(0,1) !== "<"){
+    if(legal && document.getElementById(id).innerHTML.substring(0,1) !== ""){
         return true;
     } else {
         return false;

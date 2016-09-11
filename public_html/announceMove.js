@@ -1,4 +1,4 @@
-function announceMove(input, output, capture, prom, castle){
+function announceMove(input, output, capture, prom, castle, num){
     //capture === boolean, promotion_out === wQ etc.
     
     var piece = document.getElementById(output).innerHTML.substring(1,2);
@@ -11,7 +11,7 @@ function announceMove(input, output, capture, prom, castle){
         if(document.getElementById(output).innerHTML.substring(0,1) === "w" && out.substring(1,2) === "8"){
             move = out + "=" + prom.substring(1,2);
         } else if(document.getElementById(output).innerHTML.substring(0,1) === "b" && out.substring(1,2) === "1"){
-            move = "(b)" + out + "=" +prom.substring(1,2);
+            move = "(b)" + out + "=" + prom.substring(1,2);
         } else {
             move = out;
         };                    
@@ -25,11 +25,13 @@ function announceMove(input, output, capture, prom, castle){
         case "w000" || "b000":
             move = "0-0-0";
             break;
-        default: console.log("error");
+        default: null;
     }
 
-    if(document.getElementById(output).innerHTML.substring(0,1) === "b"){
-        move = "(b) " + move;
+    if(document.getElementById(output).innerHTML.substring(0,1) === "w"){
+        move = String(num) + ". " + move;
+    } else {
+        move = move + "<br/>";
     }
     console.log(move);
     return move;

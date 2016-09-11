@@ -2,12 +2,23 @@
 <html>
     <head>
         <title>Chess</title>
-
+        <link rel="shortcut icon" href="king.ico">
     </head>
     <body>
         <style>
             *{
                 position: absolute;
+            }
+            #moves{
+                margin-left: 500px;
+                margin-top: 40px;
+                background-color: white;
+                border-color: black;
+                height: 400px;
+                width: 120px;
+                padding-top: 5px;
+                padding-left: 10px;
+                font-size: 16px;
             }
         </style>
         
@@ -16,6 +27,7 @@
         <script src="isLegal.js"></script>
         <script src="announceMove.js"></script>
         <script src="addImages_setImage.js"></script>
+        <script src="convertCoordinates.js"></script>
         
         <script type="text/javascript">
             var piece_selected = false;
@@ -27,8 +39,8 @@
             
             //for promotion
             var button1, button2, button3, button4;
-            var has_clicked_button = true;
-            var promotion;
+            var hasPromoted = true;
+            var pr;
                         
             //for castling
             var Ra1_moved = false, Rh1_moved = false, Ra8_moved = false, Rh8_moved = false;
@@ -40,7 +52,6 @@
             var capture = false;
             var ep = false;
             
-
             
 
             function changeCursor(){
@@ -48,129 +59,117 @@
                     for(j=1; j<9; j++){
                         var tempID = String(9-i) + String(j);
                         document.getElementById(tempID).style.cursor = "default";
-                        //document.getElementById(tempID).onclick = move(tempID);
                     };
                 };
             };
 
             function move(event) {
                 event.stopPropagation();
-                divId = event.srcElement.id.substring(0,2);
+                divId = event.target.id.substring(0,2);
                 var x = document.getElementById(divId).innerHTML;
                 var correct_turn = false;
                 ep = false;
                 capture = false;
                 castle = "";
 
-                if(!piece_selected && has_clicked_button){
+                if(!piece_selected && hasPromoted){
                     if(x.substring(0,1) === "w" && move_white || x.substring(0,1) === "b" && !move_white){
                         correct_turn = true;
-                    } else if(x !== "" || !has_clicked_button){
-                        alert("Tätä peliä pelataan vuoretellen! - K.K.");
+                    } else if(x !== "" || !hasPromoted){
+                        alert("Tata pelia pelataan vuoretellen! - K.K.");
                     }
                 }
 
                 if(!piece_selected && correct_turn && x !== ""){
                     //the square is clicked for the first time
-                    document.getElementById(divId).style.fontWeight = "bold";
                     document.getElementById(divId).style.backgroundColor = "red";
                     piece_selected = true;
                     init_square = divId;
                 } else if(divId === init_square){
                     //the square is clicked for the second time (no move is made)
-                    document.getElementById(divId).style.fontWeight = "normal";
                     colorSquare(init_square);
                     piece_selected = false;
                     init_square = "";
                 } else if(piece_selected && isLegal(divId, init_square)){
-                    //a legal move has been made
-                    if(ep){
-                        document.getElementById(last_move.substring(2,4)).innerHTML = "";
-                        console.log("en passant");
-                    } else if(castle === "b00"){
-                        document.getElementById("88").innerHTML = "";
-                        document.getElementById("86").innerHTML = "bR";
-                        setImage("86");
-                    } else if(castle === "b000"){
-                        document.getElementById("81").innerHTML = "";
-                        document.getElementById("84").innerHTML = "bR";
-                        setImage("84");
-                    } else if(castle === "w00"){
-                        document.getElementById("18").innerHTML = "";
-                        document.getElementById("16").innerHTML = "wR";
-                        setImage("16");
-                    } else if(castle === "w000"){
-                        document.getElementById("11").innerHTML = "";
-                        document.getElementById("14").innerHTML = "wR";
-                        setImage("14");
-                    }
-                    document.getElementById(divId).innerHTML = document.getElementById(init_square).innerHTML.substring(0,2);
-                    document.getElementById(init_square).innerHTML = "";
-                    document.getElementById(init_square).style.fontWeight = "normal";
-                    colorSquare(init_square);
-
-
-                    //determines if the kings or the rooks have moved
-                    if(divId === "11" || init_square === "11"){
-                        Ra1_moved = true;
-                    } else if(divId === "18" || init_square === "18"){
-                        Rh1_moved = true;
-                    } else if(divId === "81" || init_square === "81"){
-                        Ra8_moved = true;
-                    } else if(divId === "88" || init_square === "88"){
-                        Rh8_moved = true;
-                    } else if(init_square === "15" || divId === "15"){
-                        Ke1_moved = true;
-                    } else if(init_square === "85" || divId === "85"){
-                        Ke8_moved = true;
-                    }
-                    
-                    setImage(divId);
-                    actual_move = announceMove(init_square, divId, capture, promotion, castle);
-                    
-                    last_move = init_square + divId;
-                    if(move_white){
-                        move_number++;
-                    }
-                    move_white = !move_white;
-                    piece_selected = false;
+                    movePieces();
                 }
             };
 
-            
-            function convertCoordinates(squareId){
-                var temp;
-                var letterCrd = parseInt(squareId.substring(1,2));
-                var numberCrd = squareId.substring(0,1);
-                switch(letterCrd){
-                    case 1: return temp = "a"+numberCrd;
-                    case 2: return temp = "b"+numberCrd;
-                    case 3: return temp = "c"+numberCrd;
-                    case 4: return temp = "d"+numberCrd;
-                    case 5: return temp = "e"+numberCrd;
-                    case 6: return temp = "f"+numberCrd;
-                    case 7: return temp = "g"+numberCrd;
-                    case 8: return temp = "h"+numberCrd;
-                    default: return temp = "error";
+            function movePieces(){
+                //a legal move has been made
+                if(ep){
+                    document.getElementById(last_move.substring(2,4)).innerHTML = "";
+                    console.log("en passant");
+                } else if(castle === "b00"){
+                    document.getElementById("88").innerHTML = "";
+                    document.getElementById("86").innerHTML = "bR";
+                    setImage("86");
+                } else if(castle === "b000"){
+                    document.getElementById("81").innerHTML = "";
+                    document.getElementById("84").innerHTML = "bR";
+                    setImage("84");
+                } else if(castle === "w00"){
+                    document.getElementById("18").innerHTML = "";
+                    document.getElementById("16").innerHTML = "wR";
+                    setImage("16");
+                } else if(castle === "w000"){
+                    document.getElementById("11").innerHTML = "";
+                    document.getElementById("14").innerHTML = "wR";
+                    setImage("14");
                 }
-            }
+                document.getElementById(divId).innerHTML = document.getElementById(init_square).innerHTML.substring(0,2);                
+                document.getElementById(init_square).innerHTML = "";
+                //changes the square back from reds
+                colorSquare(init_square);
 
+
+                //determines if the kings or the rooks have moved
+                if(divId === "11" || init_square === "11"){
+                    Ra1_moved = true;
+                } else if(divId === "18" || init_square === "18"){
+                    Rh1_moved = true;
+                } else if(divId === "81" || init_square === "81"){
+                    Ra8_moved = true;
+                } else if(divId === "88" || init_square === "88"){
+                    Rh8_moved = true;
+                } else if(init_square === "15" || divId === "15"){
+                    Ke1_moved = true;
+                } else if(init_square === "85" || divId === "85"){
+                    Ke8_moved = true;
+                }
+
+                setImage(divId);
+
+                last_move = init_square + divId;
+                
+                if(move_white){
+                    move_number++;
+                }
+                actual_move = announceMove(init_square, divId, capture, pr, castle, move_number);
+                document.getElementById("moves").innerHTML += " "+actual_move;
+                
+                move_white = !move_white;
+                piece_selected = false;
+            }
+            
+            
+            
+            
+            
+            
+            
             
             /*
             TODO:
             system to determine if the king is in check
             material count
             show captured pieces
-            handle castling in move(), not isLegalKing()!!:FIXED
             move number
             
             
             BUGS
-            promotion not working: FIXED
-            en passant not working: FIXED
-            castling not working: FIXED
-            king moves like the knight: FIXED
-            rooks go invisible after castling: FIXED
+            announceMove doesn't handle promotion
+            
             */
 
             window.onload = createBoard();
@@ -178,7 +177,6 @@
             window.onload = initializePieces(ps.length);
             window.onload = changeCursor();
             window.onload = addImages();
-            //adds the event listeners to all the div's (squares)
             window.onload = function(){
                 for (h = 1; h < 9; h++) {
                     for (i = 1; i < 9; i++) {
@@ -189,5 +187,6 @@
             };
             document.body.style.backgroundColor = "teal";
         </script>
+        <div id="moves"></div>
     </body>
 </html>
