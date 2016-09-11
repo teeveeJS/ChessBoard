@@ -1,7 +1,7 @@
 function isLegal(id, init) {
     var end = document.getElementById(id).innerHTML;
     var start = document.getElementById(init).innerHTML;
-    if(end.substring(0,1) === start.substring(0,1)){
+    if (end.substring(0,1) === start.substring(0,1)){
         //checks if player tried to capture own piece
         return false;
     }
@@ -36,6 +36,7 @@ function isLegalRook(id, init){
             console.log("checking square " + String(startInt+i));
                 if(document.getElementById(String(startInt+i)).innerHTML !== ""){
                     legal = false;
+					break;
                 }
             }
         }
@@ -45,6 +46,7 @@ function isLegalRook(id, init){
             console.log("checking square " + String(startInt+i));
                 if(document.getElementById(String(startInt+i)).innerHTML !== ""){
                     legal = false;
+					break;
                 }
             }
         }
@@ -58,6 +60,7 @@ function isLegalRook(id, init){
                 //console.log(square);
                 if(document.getElementById(square).innerHTML !== ""){
                     legal = false;
+					break;
                 }
             }
         }
@@ -67,6 +70,7 @@ function isLegalRook(id, init){
                 var square = String (startInt + i*10);
                 if(document.getElementById(square).innerHTML !== ""){
                     legal = false;
+					break;
                 }
             }
         }
@@ -82,22 +86,10 @@ function isLegalBishop(id, init){
     var startNum = parseInt(init.substring(0,1));
     var endAlph = parseInt(id.substring(1,2));
     var endNum = parseInt(id.substring(0,1));
-    var legal = true;
-    if(Math.abs(endAlph - startAlph) !== Math.abs(endNum - startNum)){
-        legal = false;
-    }
-    var rankMultiplier;
-    var fileMultiplier;
-    if(endAlph > startAlph){
-        rankMultiplier = 1;
-    } else {
-        rankMultiplier = -1;
-    }
-    if(endNum > startNum){
-        fileMultiplier = 1;
-    } else {
-        fileMultiplier = -1;
-    }
+    var legal = (Math.abs(endAlph - startAlph) === Math.abs(endNum - startNum));
+	
+    var rankMultiplier = (endAlph > startAlph) ? 1 : -1;
+    var fileMultiplier = (endNum > startNum) ? 1 : -1;
     for(i=1; i<Math.abs(endAlph-startAlph); i++){
         var temp = (startNum+i*fileMultiplier)*10 + startAlph+i*rankMultiplier;
         if(document.getElementById(String(temp)).innerHTML !== ""){
@@ -113,11 +105,11 @@ function isLegalKnight(id, init){
     var startNum = parseInt(init.substring(0,1));
     var endAlph = parseInt(id.substring(1,2));
     var endNum = parseInt(id.substring(0,1));
-    var legal = false;
-    if(Math.abs(endAlph-startAlph) === 2 && Math.abs(endNum-startNum) === 1 || Math.abs(endAlph-startAlph) === 1 && Math.abs(endNum-startNum) === 2){
-        legal = true;
-    }
+	
+    var legal = (Math.abs(endAlph-startAlph) === 2 && Math.abs(endNum-startNum) === 1)
+				|| Math.abs(endAlph-startAlph) === 1 && Math.abs(endNum-startNum) === 2); 
     capture = isCapture(legal, id);
+	
     return legal;
 }
 
@@ -187,16 +179,12 @@ function isLegalPawn(id, init){
                 }
             //is the pawn blocked?
             } else if(endAlph === startAlph){
-                if(output.substring(0,1) === ""){
-                    legal = true;
-                }
+                legal = (output.substring(0,1) === "");
             }
         //if the pawn moves 2 squares (down)
         } else if(endNum - startNum === -2 && startNum === 7){
-            if(endAlph - startAlph === 0){
-                if(document.getElementById(String(parseInt(id)+10)).innerHTML === "" && output === ""){
-                    legal = true;
-                }
+            if (endAlph - startAlph === 0){
+                legal = (document.getElementById(String(parseInt(id)+10)).innerHTML === "" && output === "");
             }
         }        
     }    
@@ -291,9 +279,5 @@ function checkCastle(end_square){
 }
 
 function isCapture(legal, id){
-    if(legal && document.getElementById(id).innerHTML.substring(0,1) !== ""){
-        return true;
-    } else {
-        return false;
-    }
+    return (legal && document.getElementById(id).innerHTML.substring(0,1) !== "");
 }
