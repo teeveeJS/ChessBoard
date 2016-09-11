@@ -119,8 +119,10 @@
                 }
                 document.getElementById(divId).innerHTML = document.getElementById(init_square).innerHTML.substring(0,2);                
                 document.getElementById(init_square).innerHTML = "";
+				setImage(divId);
                 //changes the square back from reds
                 colorSquare(init_square);
+				
 
 
                 //determines if the kings or the rooks have moved
@@ -137,9 +139,7 @@
                 } else if(init_square === "85" || divId === "85"){
                     Ke8_moved = true;
                 }
-
-                setImage(divId);
-
+				
                 last_move = init_square + divId;
                 
                 if(move_white){
