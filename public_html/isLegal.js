@@ -249,25 +249,25 @@ function checkCastle(end_square){
     var endAlph = parseInt(end_square.substring(1,2));
     var endNum = parseInt(end_square.substring(0,1));
     
-    if(!Ke8_moved && !Rh8_moved && endAlph === 7 && endNum === 8 && isLegalRook("86", "88")){
+    if(!Ke8_moved && !Rh8_moved && endAlph === 7 && endNum === 8 && isLegalRook("85", "88")){
         Ke8_moved = true;
         Rh8_moved = true;
         black_castle = true;
         castle = "b00";
         return true;
-    } else if(!Ke8_moved && !Ra8_moved && endAlph === 3 && endNum === 8 && isLegalRook("84", "81")){
+    } else if(!Ke8_moved && !Ra8_moved && endAlph === 3 && endNum === 8 && isLegalRook("85", "81")){
         Ke8_moved = true;
         Ra8_moved = true;
         black_castle = true;
         castle = "b000";
         return true;
-    } else if(!Ke1_moved && !Rh1_moved && endAlph === 7 && endNum === 1 && isLegalRook("16", "18")){
+    } else if(!Ke1_moved && !Rh1_moved && endAlph === 7 && endNum === 1 && isLegalRook("15", "18")){
         Ke1_moved = true;
         Rh1_moved = true;
         white_castle = true;
         castle = "w00";
         return true;
-    } else if(!Ke1_moved && !Ra1_moved && endAlph === 3 && endNum === 1 && isLegalRook("14", "11")){
+    } else if(!Ke1_moved && !Ra1_moved && endAlph === 3 && endNum === 1 && isLegalRook("15", "11")){
         Ke1_moved = true;
         Ra1_moved = true;
         white_castle = true;
