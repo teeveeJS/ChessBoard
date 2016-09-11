@@ -106,7 +106,7 @@ function isLegalKnight(id, init){
     var endAlph = parseInt(id.substring(1,2));
     var endNum = parseInt(id.substring(0,1));
 	
-    var legal = (Math.abs(endAlph-startAlph) === 2 && Math.abs(endNum-startNum) === 1)
+    var legal = (Math.abs(endAlph-startAlph) === 2 && Math.abs(endNum-startNum) === 1
 				|| Math.abs(endAlph-startAlph) === 1 && Math.abs(endNum-startNum) === 2); 
     capture = isCapture(legal, id);
 	

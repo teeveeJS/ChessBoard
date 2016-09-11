@@ -28,6 +28,7 @@
         <script src="announceMove.js"></script>
         <script src="addImages_setImage.js"></script>
         <script src="convertCoordinates.js"></script>
+        <script src="changeCursor.js"></script>
         
         <script type="text/javascript">
             var piece_selected = false;
@@ -51,17 +52,7 @@
             //special cases
             var capture = false;
             var ep = false;
-            
-            
 
-            function changeCursor(){
-                for(i=1; i<9; i++){
-                    for(j=1; j<9; j++){
-                        var tempID = String(9-i) + String(j);
-                        document.getElementById(tempID).style.cursor = "default";
-                    };
-                };
-            };
 
             function move(event) {
                 event.stopPropagation();

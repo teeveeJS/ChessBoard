@@ -33,6 +33,5 @@ function announceMove(input, output, capture, prom, castle, num){
     } else {
         move = move + "<br/>";
     }
-    console.log(move);
     return move;
 }
