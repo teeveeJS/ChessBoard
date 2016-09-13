@@ -189,12 +189,12 @@ function isLegalPawn(id, init){
         }        
     }    
     if(endNum === 1 || endNum === 8 && legal){
-        promotion(id);
+        promotion(id, init);
     }    
     return legal;
 }
 
-function promotion(out_square){
+function promotion(out_square, in_square){
     alert("promotion");
     button1 = document.createElement("BUTTON");
     button1.setAttribute("id", out_square+"Q");
@@ -235,7 +235,12 @@ function promotion(out_square){
             document.getElementById(btn.id.substring(0,2)).innerHTML = "b" + btn.innerHTML.substring(0,1);
             pr = "b" + btn.innerHTML.substring(0,1);
         }
-        setImage(btn.id.substring(0,2));        
+        setImage(btn.id.substring(0,2));
+        var move = move_number + ". " + convertCoordinates(btn.id.substring(0,2)) + "=" + btn.innerHTML.substring(0,1);
+        if(capture){
+            move = move_number + ". " + convertCoordinates(in_square).substring(0,1) + "x" + convertCoordinates(btn.id.substring(0,2)) + "=" + btn.innerHTML.substring(0,1);
+        }
+        document.getElementById("moves").innerHTML += move;
         document.body.removeChild(button1);
         document.body.removeChild(button2);
         document.body.removeChild(button3);
