@@ -228,7 +228,7 @@ function promotion(out_square, in_square){
     
     function promote(event){
         var btn = event.target;
-        if(parseInt(btn.id.substring(0,1)) === 8){
+        if(btn.id.substring(0,1) === "8"){
             document.getElementById(btn.id.substring(0,2)).innerHTML = "w" + btn.innerHTML.substring(0,1);
             pr = "w" + btn.innerHTML.substring(0,1);
         } else {
@@ -236,10 +236,8 @@ function promotion(out_square, in_square){
             pr = "b" + btn.innerHTML.substring(0,1);
         }
         setImage(btn.id.substring(0,2));
-        var move = move_number + ". " + convertCoordinates(btn.id.substring(0,2)) + "=" + btn.innerHTML.substring(0,1);
-        if(capture){
-            move = move_number + ". " + convertCoordinates(in_square).substring(0,1) + "x" + convertCoordinates(btn.id.substring(0,2)) + "=" + btn.innerHTML.substring(0,1);
-        }
+        var move = (capture) ? convertCoordinates(in_square).substring(0,1) + "x" + convertCoordinates(btn.id.substring(0,2)) + "=" + btn.innerHTML.substring(0,1) :
+                                move_number + ". " + convertCoordinates(btn.id.substring(0,2)) + "=" + btn.innerHTML.substring(0,1);
         document.getElementById("moves").innerHTML += move;
         document.body.removeChild(button1);
         document.body.removeChild(button2);
