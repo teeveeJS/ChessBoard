@@ -189,6 +189,7 @@ function isLegalPawn(id, init){
         }        
     }    
     if(endNum === 1 || endNum === 8 && legal){
+        pr = true;
         promotion(id, init);
     }    
     return legal;
@@ -230,10 +231,10 @@ function promotion(out_square, in_square){
         var btn = event.target;
         if(btn.id.substring(0,1) === "8"){
             document.getElementById(btn.id.substring(0,2)).innerHTML = "w" + btn.innerHTML.substring(0,1);
-            pr = "w" + btn.innerHTML.substring(0,1);
+            //pr = "w" + btn.innerHTML.substring(0,1);
         } else {
             document.getElementById(btn.id.substring(0,2)).innerHTML = "b" + btn.innerHTML.substring(0,1);
-            pr = "b" + btn.innerHTML.substring(0,1);
+            //pr = "b" + btn.innerHTML.substring(0,1);
         }
         setImage(btn.id.substring(0,2));
         var move = (capture) ? convertCoordinates(in_square).substring(0,1) + "x" + convertCoordinates(btn.id.substring(0,2)) + "=" + btn.innerHTML.substring(0,1) :

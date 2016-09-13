@@ -1,12 +1,10 @@
-var ps = new Array();
-
-    function CP(name, color, Alf, Num, isCaptured) {
-        this.name = name;
-        this.color = color;
-        this.Alf = Alf;
-        this.Num = Num;
-        this.isCaptured = isCaptured;
-    };
+function CP(name, color, Alf, Num, isCaptured) {
+    this.name = name;
+    this.color = color;
+    this.Alf = Alf;
+    this.Num = Num;
+    this.isCaptured = isCaptured;
+};
 
 function createPieces(){
     for (j=0; j<8; j++) {
@@ -42,5 +40,3 @@ function initializePieces(length){
         document.getElementById(pieceID).innerHTML = ps[i].color + ps[i].name;
     };
 };
-
-
