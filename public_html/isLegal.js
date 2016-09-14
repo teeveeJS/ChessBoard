@@ -118,6 +118,7 @@ function isLegalKing(id, init){
     var startNum = parseInt(init.substring(0,1));
     var endAlph = parseInt(id.substring(1,2));
     var endNum = parseInt(id.substring(0,1));
+    var color  = document.getElementById(init).substring(0,1);
     var legal = false;
     if(Math.abs(endAlph-startAlph) <= 1 && Math.abs(endNum-startNum) <= 1){
         legal = true;
@@ -126,6 +127,13 @@ function isLegalKing(id, init){
     //castling logic
     if(Math.abs(endAlph - startAlph) === 2 && checkCastle(id)){
         legal = true;
+    }
+    if(legal){
+        if(color === "w"){
+            poswK = id;
+        } else {
+            posbK = id;
+        }
     }
     capture = isCapture(legal, id);
     return legal;

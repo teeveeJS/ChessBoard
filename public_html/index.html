@@ -55,6 +55,10 @@
             //special cases
             var capture = false;
             var ep = false;
+            
+            //checkCheck
+            var poswK = "15";
+            var posbK = "85";
 
 
             function move(event) {
@@ -141,6 +145,8 @@
                 }
                 actual_move = announceMove(init_square, divId, capture, pr, castle, move_number);
                 document.getElementById("moves").innerHTML += " "+actual_move;
+                
+                //checkCheck(move_white, poswK, posbK);
                 
                 move_white = !move_white;
                 piece_selected = false;
