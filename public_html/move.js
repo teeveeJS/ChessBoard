@@ -54,7 +54,7 @@ function movePieces(){
     }
     document.getElementById(divId).innerHTML = document.getElementById(init_square).innerHTML.substring(0,2);                
     document.getElementById(init_square).innerHTML = "";
-                    setImage(divId);
+    setImage(divId);
     //changes the square back from reds
     colorSquare(init_square);
 
@@ -83,7 +83,7 @@ function movePieces(){
     actual_move = announceMove(init_square, divId, capture, pr, castle, move_number);
     document.getElementById("moves").innerHTML += " "+actual_move;
 
-    //checkCheck(move_white, poswK, posbK);
+    checkCheck(move_white, poswK, posbK);
 
     move_white = !move_white;
     piece_selected = false;

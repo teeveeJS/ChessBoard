@@ -1,31 +1,42 @@
 function isLegal(id, init) {
     var end = document.getElementById(id).innerHTML;
     var start = document.getElementById(init).innerHTML;
+	var x;
     if (end.substring(0,1) === start.substring(0,1)){
         //checks if player tried to capture own piece
         return false;
     }
+    if(start === null){
+        return false;
+    }
     switch(start.substring(1,2)){
         case "R":
-            return isLegalRook(id, init);
+            x = isLegalRook(id, init);
+			break;
         case "B":
-            return isLegalBishop(id, init);
+            x = isLegalBishop(id, init);
+			break;
         case "N":
-            return isLegalKnight(id, init);
+            x = isLegalKnight(id, init);
+			break;
         case "Q":
-            return isLegalRook(id, init) || isLegalBishop(id, init);
+            x = isLegalRook(id, init) || isLegalBishop(id, init);
+			break;
         case "K":
-            return isLegalKing(id, init);
+            x = isLegalKing(id, init);
+			break;
         case "p":
-            return isLegalPawn(id, init);
+            x = isLegalPawn(id, init);
+			break;
     }
+	return x;
 }
 
 function isLegalRook(id, init){
     var startInt = parseInt(init);
     var endInt = parseInt(id);
     var legal = true;
-    console.log("checking from " + startInt + " to " + endInt);
+    //console.log("checking from " + startInt + " to " + endInt);
     if(init.substring(0,1) === id.substring(0,1)){
         //rank
         //checks if there are any pieces on the way to the final square
@@ -33,7 +44,7 @@ function isLegalRook(id, init){
         //positive direction
         if(distance>0){
             for(i=1; i<distance; i++){
-            console.log("checking square " + String(startInt+i));
+            //console.log("checking square " + String(startInt+i));
                 if(document.getElementById(String(startInt+i)).innerHTML !== ""){
                     legal = false;
 					break;
@@ -43,7 +54,7 @@ function isLegalRook(id, init){
         //negative direction
         if(distance<0){
             for(i=-1; i>distance; i--){
-            console.log("checking square " + String(startInt+i));
+            //console.log("checking square " + String(startInt+i));
                 if(document.getElementById(String(startInt+i)).innerHTML !== ""){
                     legal = false;
 					break;
@@ -86,16 +97,18 @@ function isLegalBishop(id, init){
     var startNum = parseInt(init.substring(0,1));
     var endAlph = parseInt(id.substring(1,2));
     var endNum = parseInt(id.substring(0,1));
-    var legal = (Math.abs(endAlph - startAlph) === Math.abs(endNum - startNum));
-	
-    var rankMultiplier = (endAlph > startAlph) ? 1 : -1;
-    var fileMultiplier = (endNum > startNum) ? 1 : -1;
-    for(i=1; i<Math.abs(endAlph-startAlph); i++){
-        var temp = (startNum+i*fileMultiplier)*10 + startAlph+i*rankMultiplier;
-        if(document.getElementById(String(temp)).innerHTML !== ""){
-            legal = false;
-        }
-    }
+    var legal = Math.abs(endAlph - startAlph) === Math.abs(endNum - startNum);
+	if(!legal){
+		return false;
+	}
+	var rankMultiplier = Math.sign(endAlph - startAlph);
+	var fileMultiplier = Math.sign(endNum - startNum);
+	for(i=1; i<Math.abs(endNum-startNum); i++){
+		if(document.getElementById(String(startNum+i*fileMultiplier) + String(startAlph+i*rankMultiplier)).innerHTML !== ""){
+			legal = false;
+			break;
+		}
+	}
     capture = isCapture(legal, id);
     return legal;
 }
@@ -196,7 +209,7 @@ function isLegalPawn(id, init){
             }
         }        
     }    
-    if(endNum === 1 || endNum === 8 && legal){
+    if(startNum === 2 && endNum === 1 || startNum === 7 && endNum === 8 && legal){
         pr = true;
         promotion(id, init);
     }    
@@ -257,7 +270,7 @@ function promotion(out_square, in_square){
 }
 
 function checkCastle(end_square){
-    console.log('checking castle');
+    //console.log('checking castle');
     var endAlph = parseInt(end_square.substring(1,2));
     var endNum = parseInt(end_square.substring(0,1));
     
