@@ -38,5 +38,6 @@ function initializePieces(length){
         var pieceID = String(ps[i].Num)+String(ps[i].Alf);
         //console.log(pieceID);
         document.getElementById(pieceID).innerHTML = ps[i].color + ps[i].name;
+        board[pieceID] = ps[i].color + ps[i].name;
     };
 };

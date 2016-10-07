@@ -1,13 +1,13 @@
 function isLegal(id, init) {
     var end = document.getElementById(id).innerHTML;
     var start = document.getElementById(init).innerHTML;
-	var x;
+    var x;
     if (end.substring(0,1) === start.substring(0,1)){
         //checks if player tried to capture own piece
         return false;
     }
     if(start === null){
-        return false;
+        return false;//makes checking for check a bit faster
     }
     switch(start.substring(1,2)){
         case "R":

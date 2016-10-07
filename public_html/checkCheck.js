@@ -1,19 +1,16 @@
-function checkCheck(toMove, pos_wK, pos_bK){
+function checkCheck(){
     var check_w = false;
     var check_b = false;
     for (var h = 1; h < 9; h++){
         for (var i = 1; i < 9; i++){
             var id = String(h) + String(i);
-            if(toMove){
-                if(isLegal(pos_bK, id)){
-                    console.log('check');
-                    check_w = true;
-                }
-            } else {
-                if(isLegal(pos_wK, id)){
-                    console.log('check');
-                    check_b = true;
-                }
+            if(isLegal(poswK, id)){
+                console.log('white king in check from ' + id);
+                check_w = true;
+            }
+            if(isLegal(posbK, id)){
+                console.log('black king in check from' + id);
+                check_b = true;
             }
         }
     }

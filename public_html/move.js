@@ -26,6 +26,10 @@ function move(event) {
         piece_selected = false;
         init_square = "";
     } else if(piece_selected && isLegal(divId, init_square)){
+        /*
+        if(move_white && !checkCheck()[0] || !move_white && !checkCheck()[1]){
+            movePieces();
+        }*/
         movePieces();
     }
 };
@@ -83,8 +87,8 @@ function movePieces(){
     actual_move = announceMove(init_square, divId, capture, pr, castle, move_number);
     document.getElementById("moves").innerHTML += " "+actual_move;
 
-    checkCheck(move_white, poswK, posbK);
-
+    checkCheck();
+    
     move_white = !move_white;
     piece_selected = false;
 }
